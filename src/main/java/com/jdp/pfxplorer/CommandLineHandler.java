@@ -24,13 +24,17 @@ public class CommandLineHandler implements CommandLineRunner {
         if (args.length == 0) {
             return;
         }
-        if (args[0].equals("loadpfx")) {
-            ((ImportPFX)applicationContext.getBean("importPFX")).run(args);
-            return;
-        }
-        if (args[0].equals("loadpitchers")) {
-            ((ImportPlayerMap)applicationContext.getBean("importPlayerMap")).run(args);
-            return;
+
+        switch (args[0]) {
+            case "loadpfx":
+                ((ImportPFX) applicationContext.getBean("importPFX")).run(args);
+                break;
+            case "loadpitchers":
+                ((ImportPlayerMap) applicationContext.getBean("importPlayerMap")).run(args);
+                break;
+            default:
+                System.out.println("Unknown command '" + args[0] + "', ignoring");
+                break;
         }
     }
 }

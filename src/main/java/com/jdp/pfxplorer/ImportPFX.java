@@ -2,7 +2,7 @@ package com.jdp.pfxplorer;
 
 import com.jdp.pfxplorer.dao.PitchDao;
 import com.jdp.pfxplorer.domain.Pitch;
-import com.jdp.pfxplorer.util.XmlUtil;
+import com.jdp.pfxplorer.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -77,7 +77,7 @@ public class ImportPFX {
         for (int year = startYear; year <= endYear; year++) {
             for (int month = startMonth; month <= endMonth; month++) {
 
-                String mlb = readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2));
+                String mlb = Utils.readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2));
                 if (mlb == null) {
                     System.out.println("*** CAN'T FIND MONTH: " + year + " - " + month);
                     continue;
@@ -88,7 +88,7 @@ public class ImportPFX {
                 while (dayMatcher.find()) {
                     String day = dayMatcher.toMatchResult().group(1);
 
-                    String daymlb = readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2) + "/day_" + day);
+                    String daymlb = Utils.readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2) + "/day_" + day);
 
                     Matcher gidMatcher = gidPattern.matcher(daymlb);
 
@@ -102,13 +102,13 @@ public class ImportPFX {
                             continue;
                         }
 
-                        String gameData = readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2) + "/day_" + day + "/gid_" + gameId + "/game.xml");
+                        String gameData = Utils.readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2) + "/day_" + day + "/gid_" + gameId + "/game.xml");
                         if (gameData == null) {
                             System.out.println("*** No Game XML ***");
                             continue;
                         }
 
-                        Document gameDataDoc = XmlUtil.parseXml(gameData);
+                        Document gameDataDoc = Utils.parseXml(gameData);
                         String gameType = (String) xpath.evaluate("//game/@type", gameDataDoc, XPathConstants.STRING);
 
                         if (gameType == null || !gameType.equals("R")) {
@@ -116,7 +116,7 @@ public class ImportPFX {
                             continue;
                         }
 
-                        String inningXml = readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2) + "/day_" + day + "/gid_" + gameId + "/inning/inning_all.xml");
+                        String inningXml = Utils.readUrl(BASE_URL + "year_" + year + "/month_" + pad(month, 2) + "/day_" + day + "/gid_" + gameId + "/inning/inning_all.xml");
                         if (inningXml == null) {
                             System.out.println("*** No Innings Found ***");
                             continue;
@@ -128,36 +128,6 @@ public class ImportPFX {
                 }
             }
         }
-    }
-
-    /**
-     * Helper method to read a url directly into a string.
-     * @return contents of url as a string, or null if there was an error.
-     */
-    private static String readUrl(String urlString) {
-        InputStream urlStream;
-        try {
-            urlStream = new URL(urlString).openStream();
-        } catch (IOException e) {
-            return null;
-        }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(urlStream));
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-        } catch (IOException e) {
-        } finally {
-            try {
-                urlStream.close();
-            } catch (IOException e) {
-            }
-        }
-        return sb.toString();
     }
 
     /**
@@ -178,7 +148,7 @@ public class ImportPFX {
     private void processInnings(String inningXml, int year, int month, int day, String gameId) throws Exception {
         int pitchCountForGame = 0;
 
-        Document doc = XmlUtil.parseXml(inningXml);
+        Document doc = Utils.parseXml(inningXml);
         // look for all complete pitch nodes (those with a required pitch attribute)
         NodeList nl = (NodeList) xpath.evaluate("//game/inning/*/atbat/pitch[@break_y]", doc, XPathConstants.NODESET);
 

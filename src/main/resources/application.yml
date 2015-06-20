@@ -1,0 +1,12 @@
+spring:
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/pfxplorer
+    username: pfxuser
+    password: pfxpass
+
+  jpa:
+    hibernate:
+        ddl-auto: update
+        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+        dialect: org.hibernate.dialect.MySQL5Dialect

@@ -12,7 +12,7 @@ A sample database [database.sql.gz](https://github.com/jparish9/pfxplorer/blob/m
 
 ## First Run
 
-A pre-built jar is supplied in the root directory.  It can also be rebuilt from source using `gradle build`.
+A pre-built jar is supplied in the root directory.  It can also be rebuilt from source using `gradle build`, in which case the jar can be found under `/build/libs`.
 
 Run `java -jar pfxplorer-1.0.0.jar` from a command prompt in the project root directory.  After a few seconds of startup configuration messages, a successful startup will display a message such as
 ```
@@ -48,13 +48,13 @@ The application supports two command line modes for importing additional data.
 
 As new players join the MLB, they can be imported with a simple CSV format where the first two columns are their MLB ID and full name.  To import new players on application startup, run:
 ```
-java -jar build/libs/pfxplorer-1.0.0.jar loadpitchers [filename]
+java -jar pfxplorer-1.0.0.jar loadpitchers [filename]
 ```
 If no `filename` is supplied, the player CSV will be downloaded from [crunchtimebaseball.com](http://crunchtimebaseball.com/baseball_map.html).  This will remove all existing players before importing from the spreadsheet.
 
 To import additional Pitch F/X data, this command line mode is supported:
 ```
-java -jar build/libs/pfxplorer-1.0.0.jar loadpfx [year] [month]
+java -jar pfxplorer-1.0.0.jar loadpfx [year] [month]
 ```
 If no `month` is specified, all regular season pitches will be imported for the whole year.
 If no `month` or `year` is supported, all regular season pitches from 2008-2015 will be imported.
